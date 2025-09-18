@@ -4,3 +4,12 @@ main: bne.bneplugins.bnehomes.BneHomes
 api-version: '1.21'
 prefix: [ BneHomes ]
 authors: [ Bne ]
+commands:
+  sethome:
+    description: Setzt ein Home
+  delhome:
+    description: Löscht ein Home
+  home:
+    description: Teleportiert dich zu einem Home
+  homes:
+    description: Zeigt alle Homes an
