@@ -1,6 +1,13 @@
-# Allgemeine Plugin-Konfiguration
-prefix: "§x0§0§e§6§f§f§lBneHomes §8§l» §r"
-database-file: "homes.db"
-max-homes-per-player: 10
-bungeecord-enabled: false
-current-server: "Lobby"
+database:
+  type: MYSQL # MYSQL oder SQLITE
+  sqlite-file: homes.db
+  mysql:
+    host: localhost
+    port: 3306
+    database: bnehomes
+    username: root
+    password: password
+
+proxy-enabled: true
+current-server: lobby
+prefix: "§x0§0§e§6§f§f§lPixel§x§f§f§f0§0§0§lBlocks §8§l» §r§7"

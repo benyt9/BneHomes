@@ -1,0 +1,16 @@
+{
+  "id": "bnehomes",
+  "name": "BneHomes",
+  "version": "1.0.0",
+  "description": "Homes-Plugin mit Proxy-Unterstützung (Velocity/Bungee/Waterfall)",
+  "authors": ["Bne"],
+  "main": "bne.bneplugins.bnehomes.BneHomes",
+  "depends": [],
+  "optional": [],
+  "commands": [
+    { "name": "sethome", "description": "Setzt ein Home", "permission": "bnehomes.sethome" },
+    { "name": "delhome", "description": "Löscht ein Home", "permission": "bnehomes.delhome" },
+    { "name": "home", "description": "Teleportiert zu einem Home", "permission": "bnehomes.home" },
+    { "name": "homes", "description": "Zeigt alle Homes an", "permission": "bnehomes.homes" }
+  ]
+}

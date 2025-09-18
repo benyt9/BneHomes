@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'bne.bneplugins.bnehomes'
-version = '1.0-BETA'
+version = '1.1-BETA'
 
 repositories {
     mavenCentral()
@@ -12,23 +12,26 @@ repositories {
         name = "papermc-repo"
         url = "https://repo.papermc.io/repository/maven-public/"
     }
-}
-
-dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
-}
-
-tasks {
-    runServer {
-        // Configure the Minecraft version for our task.
-        // This is the only required configuration besides applying the plugin.
-        // Your plugin's jar (or shadowJar if present) will be used automatically.
-        minecraftVersion("1.21")
+    maven {
+        name = "Velocity"
+        url = "https://nexus.velocitypowered.com/repository/maven-public/"
     }
 }
 
-def targetJavaVersion = 21
+dependencies {
+    // Paper/Bukkit API
+    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
+
+    // Velocity API
+    compileOnly 'com.velocitypowered:velocity-api:3.1.1'
+    annotationProcessor 'com.velocitypowered:velocity-api:3.1.1'
+
+    // SQLite
+    implementation 'org.xerial:sqlite-jdbc:3.41.2.1'
+}
+
 java {
+    def targetJavaVersion = 21
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
@@ -39,12 +42,18 @@ java {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
-
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        options.release.set(targetJavaVersion)
+    if (JavaVersion.current().isJava10Compatible()) {
+        options.release.set(21)
     }
 }
 
+tasks {
+    runServer {
+        minecraftVersion("1.21")
+    }
+}
+
+// Ressourcen verarbeiten (Version in plugin.yml einsetzen)
 processResources {
     def props = [version: version]
     inputs.properties props
@@ -52,4 +61,9 @@ processResources {
     filesMatching('plugin.yml') {
         expand props
     }
+}
+
+// Duplikate verhindern (velocity-plugin.json)
+tasks.jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
