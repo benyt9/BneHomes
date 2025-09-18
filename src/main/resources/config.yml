@@ -1,0 +1,6 @@
+# Allgemeine Plugin-Konfiguration
+prefix: "§x0§0§e§6§f§f§lBneHomes §8§l» §r"
+database-file: "homes.db"
+max-homes-per-player: 10
+bungeecord-enabled: false
+current-server: "Lobby"

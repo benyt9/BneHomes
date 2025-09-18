@@ -7,9 +7,25 @@ authors: [ Bne ]
 commands:
   sethome:
     description: Setzt ein Home
+    usage: /sethome <Name>
+    permission: bnehomes.sethome
   delhome:
     description: Löscht ein Home
+    usage: /delhome <Name>
+    permission: bnehomes.delhome
   home:
-    description: Teleportiert dich zu einem Home
+    description: Teleportiert zu einem Home
+    usage: /home <Name>
+    permission: bnehomes.home
   homes:
     description: Zeigt alle Homes an
+    permission: bnehomes.homes
+permissions:
+  bnehomes.sethome:
+    default: true
+  bnehomes.delhome:
+    default: true
+  bnehomes.home:
+    default: true
+  bnehomes.homes:
+    default: true
