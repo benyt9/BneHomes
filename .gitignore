@@ -1,0 +1,13 @@
+# Gradle build output
+/build/
+
+# IntelliJ IDEA
+/.idea/
+/*.iml
+
+# Logs
+*.log
+
+# OS specific
+.DS_Store
+Thumbs.db
