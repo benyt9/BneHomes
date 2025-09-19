@@ -8,24 +8,24 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
-import java.util.logging.Level;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BneHomes extends JavaPlugin {
 
     private HomeManager homeManager;
     private boolean proxyEnabled;
-    private String prefix;
     private String currentServer;
+    private MessageManager messageManager;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
         saveResource("messages.yml", false);
 
-        prefix = getConfig().getString("prefix", "§7[§eBneHomes§7] §r§7");
+        messageManager = new MessageManager(this);
         currentServer = getConfig().getString("current-server", "lobby");
 
-        // Proxy nur aktiv, wenn MySQL
         String dbType = getConfig().getString("database.type", "SQLITE");
         proxyEnabled = getConfig().getBoolean("proxy-enabled", true) && dbType.equalsIgnoreCase("MYSQL");
 
@@ -33,12 +33,14 @@ public class BneHomes extends JavaPlugin {
             homeManager = new HomeManager();
             homeManager.init(this);
         } catch (SQLException e) {
-            getLogger().log(Level.SEVERE, "Fehler beim Initialisieren der Datenbank", e);
+            messageManager.log("db-error", new HashMap<>());
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
-        getLogger().info(prefix + "BneHomes aktiviert! Proxy-Support: " + proxyEnabled);
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("proxy", String.valueOf(proxyEnabled));
+        messageManager.log("plugin-enabled", placeholders);
     }
 
     @Override
@@ -46,67 +48,91 @@ public class BneHomes extends JavaPlugin {
         try {
             if(homeManager != null) homeManager.shutdown();
         } catch (SQLException e) {
-            getLogger().log(Level.SEVERE, "Fehler beim Schließen der Datenbank", e);
+            messageManager.log("db-error", new HashMap<>());
         }
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if(!(sender instanceof Player player)) {
-            sender.sendMessage(prefix + "Dieser Befehl kann nur von Spielern genutzt werden!");
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage("§cNur Spieler können diesen Befehl nutzen!");
             return true;
         }
 
         try {
-            switch(command.getName().toLowerCase()) {
-                case "sethome":
+            switch (command.getName().toLowerCase()) {
+
+                case "sethome": {
                     String homeName = args.length > 0 ? args[0] : "home";
                     Location loc = player.getLocation();
                     homeManager.saveHome(player, homeName, loc, currentServer);
-                    player.sendMessage(prefix + "Home §b" + homeName + " §7gesetzt!");
-                    break;
 
-                case "home":
-                    homeName = args.length > 0 ? args[0] : "home";
+                    Map<String, String> placeholders = new HashMap<>();
+                    placeholders.put("home", homeName);
+                    messageManager.send(player, "sethome-success", placeholders);
+                    break;
+                }
+
+                case "home": {
+                    String homeName = args.length > 0 ? args[0] : "home";
                     Home home = homeManager.getHome(player, homeName);
-                    if(home == null) {
-                        player.sendMessage(prefix + "Home §b" + homeName + " §7nicht gefunden!");
+
+                    if (home == null) {
+                        Map<String, String> placeholders = new HashMap<>();
+                        placeholders.put("home", homeName);
+                        messageManager.send(player, "home-not-found",placeholders);
                         return true;
                     }
 
-                    if(home.getServer().equals(currentServer) || !proxyEnabled) {
+                    if (home.getServer().equals(currentServer) || !proxyEnabled) {
                         Location target = new Location(
                                 Bukkit.getWorld(home.getWorld()),
                                 home.getX(), home.getY(), home.getZ(),
                                 home.getYaw(), home.getPitch()
                         );
                         player.teleport(target);
-                        player.sendMessage(prefix + "Teleportiere zu §b" + homeName + "§7...");
+
+                        Map<String, String> placeholders = new HashMap<>();
+                        placeholders.put("home", homeName);
+                        messageManager.send(player, "home-teleport", placeholders);
+
                     } else {
                         homeManager.sendProxyTeleport(player, home.getServer());
-                        player.sendMessage(prefix + "Teleportiere zu §b" + homeName + "§7 via Proxy...");
+                        Map<String, String> placeholders = new HashMap<>();
+                        placeholders.put("home", homeName);
+                        messageManager.send(player, "home-proxy-teleport", placeholders);
                     }
                     break;
+                }
 
-                case "delhome":
-                    homeName = args.length > 0 ? args[0] : "home";
+                case "delhome": {
+                    String homeName = args.length > 0 ? args[0] : "home";
                     homeManager.deleteHome(player, homeName);
-                    player.sendMessage(prefix + "Home §b" + homeName + " §7gelöscht!");
-                    break;
 
-                case "homes":
-                    player.sendMessage(prefix + "Homes:");
-                    for(Home h : homeManager.getHomes(player)) {
-                        player.sendMessage("§b- " + h.getName() + " (§7Server: " + h.getServer() + "§7)");
+                    Map<String, String> placeholders = new HashMap<>();
+                    placeholders.put("home", homeName);
+                    messageManager.send(player, "delhome-success", placeholders);
+                    break;
+                }
+
+                case "homes": {
+                    messageManager.send(player, "homes-list-title");
+
+                    for (Home h : homeManager.getHomes(player)) {
+                        Map<String, String> placeholders = new HashMap<>();
+                        placeholders.put("home", h.getName());
+                        placeholders.put("server", h.getServer());
+                        messageManager.send(player, "homes-list-entry", placeholders);
                     }
                     break;
+                }
 
                 default:
                     return false;
             }
         } catch (SQLException e) {
-            getLogger().log(Level.SEVERE, "Fehler bei Home-Befehl", e);
-            player.sendMessage(prefix + "Fehler beim Verarbeiten des Befehls!");
+            messageManager.send(player, "db-error");
+            e.printStackTrace();
         }
 
         return true;

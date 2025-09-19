@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'bne.bneplugins.bnehomes'
-version = '1.1-BETA'
+version = '1.3-BETA'
 
 repositories {
     mavenCentral()
@@ -21,6 +21,7 @@ repositories {
 dependencies {
     // Paper/Bukkit API
     compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.20-R0.1-SNAPSHOT")
 
     // Velocity API
     compileOnly 'com.velocitypowered:velocity-api:3.1.1'
