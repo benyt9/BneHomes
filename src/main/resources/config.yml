@@ -1,13 +1,12 @@
+# BneHomes Konfiguration
 database:
-  type: MYSQL # MYSQL oder SQLITE
-  sqlite-file: homes.db
-  mysql:
-    host: localhost
-    port: 3306
-    database: bnehomes
-    username: root
-    password: password
+  type: "sqlite" # "mysql" oder "sqlite"
+  host: "localhost"
+  port: 3306
+  name: "minecraft"
+  user: "root"
+  password: ""
 
-proxy-enabled: true
-current-server: lobby
-prefix: "§8[§2BneHomes§8] §8§l» §r§7"
+settings:
+  max_homes: 5
+  teleport_delay: 3 # Sekunden (optional für später)

@@ -1,16 +1,6 @@
-prefix: "<dark_gray>[<dark_green>BneHomes<dark_gray>] <dark_gray><bold>» <gray>"
-
-plugin-enabled: "%prefix%BneHomes aktiviert! Proxy-Support: %proxy%"
-only-player: "%prefix%Dieser Befehl kann nur von Spielern genutzt werden!"
-
-sethome-success: "%prefix%Home <green>%home%</green> gesetzt!"
-delhome-success: "%prefix%Home <green>%home%</green> gelöscht!"
-home-not-found: "%prefix%Home <green>%home%</green> nicht gefunden!"
-home-teleport: "%prefix%Teleportiere zu <green>%home%</green>..."
-home-proxy-teleport: "%prefix%Teleportiere zu <green>%home%</green> via Proxy..."
-home-error: "%prefix%Fehler beim Teleportieren!"
-
-homes-list-title: "%prefix%<gray>Homes:"
-homes-list-entry: "%prefix%<dark_gray>- <green>%home%</green> (<gray>Server: <green>%server%</green><dark_gray>)"
-
-db-error: "%prefix%Fehler beim Verarbeiten des Befehls!"
+prefix: "<gray>[<gradient:aqua:blue><bold>BneHomes</bold></gradient>]</gray> "
+no_permission: "<red>Dazu hast du keine Rechte!"
+home_set: "<green>Dein Home <yellow>%name%</yellow> wurde gespeichert."
+home_teleport: "<gray>Teleportiere zu <aqua>%name%</aqua>..."
+home_not_found: "<red>Dieses Home existiert nicht!"
+home_deleted: "<red>Home <yellow>%name%</yellow> wurde gelöscht."
